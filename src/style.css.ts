@@ -1,4 +1,4 @@
-import { globalStyle, style } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 
 const bottomBtn = style({
   position: 'fixed',
@@ -17,11 +17,10 @@ const container = style({
 
 const box = style({
   display: 'flex',
-  padding: '0 20px 24px',
+  padding: '0 16px 24px',
   flexDirection: 'column',
-  gap: '8px',
-  borderRadius: '24px',
-  backgroundColor: '#1C1C1E',
+  gap: '1rem',
+  background: 'linear-gradient(180deg, #072C60 0%, #2F0438 50%, #121213 100%)',
   alignItems: 'center',
   textAlign: 'center',
 });
@@ -38,21 +37,44 @@ const cell = style({
   padding: '1rem',
 });
 
-const tag = style({
-  backgroundColor: '#EEEDFF',
-  borderRadius: '8px',
-  padding: '3px 8px',
-  color: '#7A63F1',
-  marginTop: '8px',
-  fontSize: '15px',
-  lineHeight: '20px',
+const grid = style({
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '12px',
+  width: '100%',
+});
+const gridItem = style({
+  backgroundColor: '#625267',
+  borderRadius: '16px',
+  padding: '16px',
+  border: '1px solid #E9E9FA5E',
+  textAlign: 'center',
 });
 
-const listItem = style({});
+const banner = style({
+  backgroundColor: '#1E2C37',
+  borderRadius: '12px',
+  padding: '12px 16px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  textAlign: 'left',
+  marginTop: '.5rem',
+});
 
-globalStyle(`${listItem} > div:first-child`, {
-  color: '#8F8F98',
-  paddingLeft: 0,
+const bannerImg = style({
+  margin: '-24px 0 -24px -30px',
+});
+
+const cell2 = style({
+  backgroundColor: '#1C1C1E',
+  borderRadius: '12px',
+  padding: '12px 16px',
+  overflow: 'hidden',
+});
+const cell2Img = style({
+  marginRight: '-16px',
+  marginBottom: '-12px',
 });
 
 export const appSt = {
@@ -61,6 +83,10 @@ export const appSt = {
   box,
   row,
   cell,
-  tag,
-  listItem,
+  grid,
+  gridItem,
+  banner,
+  bannerImg,
+  cell2,
+  cell2Img,
 };

@@ -1,65 +1,96 @@
 import { ButtonMobile } from '@alfalab/core-components/button/mobile';
 import { Collapse } from '@alfalab/core-components/collapse';
 import { Gap } from '@alfalab/core-components/gap';
-import { List } from '@alfalab/core-components/list';
 import { PureCell } from '@alfalab/core-components/pure-cell';
 import { Typography } from '@alfalab/core-components/typography';
-import { BulbMIcon } from '@alfalab/icons-glyph/BulbMIcon';
 import { ChevronDownMIcon } from '@alfalab/icons-glyph/ChevronDownMIcon';
 import { ChevronUpMIcon } from '@alfalab/icons-glyph/ChevronUpMIcon';
-import { CrownMIcon } from '@alfalab/icons-glyph/CrownMIcon';
-import { LightningMIcon } from '@alfalab/icons-glyph/LightningMIcon';
-import { useEffect, useState } from 'react';
-import hb from './assets/hb.png';
-import heart from './assets/heart.png';
-import house from './assets/house.png';
+import { Fragment, useEffect, useState } from 'react';
+import bannerImg from './assets/banner.png';
+import exp1 from './assets/exp1.png';
+import exp2 from './assets/exp2.png';
+import exp3 from './assets/exp3.png';
+import exp4 from './assets/exp4.png';
+import img1 from './assets/img1.png';
+import img2 from './assets/img2.png';
+import img3 from './assets/img3.png';
+import p1 from './assets/p1.png';
+import p2 from './assets/p2.png';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { LS, LSKeys } from './ls';
+import { TICKER_TO_IMAGE } from './stocks';
 import { appSt } from './style.css';
 
-const items = [
+const expItems = [
   {
-    title: 'Ранний доступ к идеям и сигналам',
-    text: [
-      'Push-уведомления по рыночным событиям за 30-60 минут до остальных пользователей',
-      'Сигналы с уровнями входа и выхода, базой аналитики',
-    ],
-    IconComp: BulbMIcon,
+    title: 'Получайте рекомендации ИИ',
+    text: 'Мы покажем, что именно стоит купить, что — продать, и в каком количестве',
+    img: exp1,
   },
   {
-    title: 'Приоритетная поддержка',
-    text: 'Любой вопрос в чатах Альфа Инвестиций решится быстрее',
-    IconComp: CrownMIcon,
+    title: 'Настраивайте ИИ под себя',
+    text: 'Исключайте бумаги, которые не хотите покупать или продавать. Настройте портфель под свою стратегию за пару секунд',
+    img: exp2,
   },
   {
-    title: 'Ранний доступ к обновлениям',
-    text: 'Для приложений Альфа Инвестиции и Альфа Инвестиции Онлайн',
-    IconComp: LightningMIcon,
+    title: 'Совершайте сделки одной кнопкой',
+    text: 'Все рекомендации можно исполнить в 1 клик — покупки и продажи выполняются автоматически',
+    img: exp3,
+  },
+  {
+    title: 'Следите за новостным фоном и мнениями в сообществах',
+    text: 'Экономьте время на поиск и анализ информации по активам и рынку в целом',
+    img: exp4,
+  },
+];
+const pItems = [
+  {
+    title: 'Актуальные идеи для вашего портфеля',
+    text: 'ИИ анализирует рынок в реальном времени, подбирает лучшие идеи и формирует готовый портфель под вашу стратегию',
+    img: p1,
+  },
+  {
+    title: 'Анализ мнений инвесторов',
+    text: 'ИИ анализирует рынок в реальном времени, подбирает лучшие идеи и формирует готовый портфель под вашу стратегию',
+    img: p2,
+  },
+];
+
+const insideItems = [
+  {
+    title: 'Алгоритм вместо эмоций',
+    subtitle: 'ИИ не подвержен панике, азарту и импульсивным решениям — только холодный расчёт',
+    img: img1,
+  },
+  {
+    title: 'Экономия времени',
+    subtitle:
+      'Больше не нужно бесконечно искать идеи и разбираться в аналитике — алгоритм делает это за вас и предлагает готовые решения',
+    img: img2,
+  },
+  {
+    title: 'Контроль остаётся у вас',
+    subtitle: 'Вы выбираете сами: совершать сделки или просто следить за динамикой рекомендаций',
+    img: img3,
   },
 ];
 
 const faqs = [
   {
-    question: 'Насколько выгодна подписка?',
-    answer:
-      'Средний активный инвестор экономит от 300 до 500р в месяц только на комиссиях и получает идеи с доходностью выше рынка.',
+    question: 'С какой суммы можно начать?',
+    answer: [
+      'Начать можно с любой суммы — даже от 100 ₽. Этого достаточно, чтобы сделать первые шаги по стратегии Наставников.',
+      'Однако для того чтобы полностью следовать их рекомендациям и использовать все возможности стратегии, лучше рассмотреть инвестиции от 10 000 ₽ и выше.',
+    ],
   },
   {
     question: 'Можно отменить в любой момент?',
-    answer:
-      'Да, отменить можно в любой момент. Если вы отменили в бесплатный период, то привилегии станут недоступны сразу. Если вы отменили подписку после оплаты, привилегии станут недоступны по окончании оплаченного периода.',
-  },
-  {
-    question: 'Есть ли какие-то ограничения по условию 5 сделок без комиссии?',
-    answer:
-      'Условие распространяется на оборот в месяц до 300 000 ₽ на первые 5 сделок в месяц. Если ваш оборот за первые 5 сделок превысил 300 000 ₽, комиссия взимается согласно тарифному плану на счете.',
-  },
-  {
-    question: 'Есть ли какие-то ограничения по выплате кэшбека?',
-    answer: 'Предельный уровень выплаты 1000 ₽ в месяц.',
+    answer: ['Да, отменить можно в любой момент.'],
   },
 ];
 
-const LINK = 'alfabank://longread?endpoint=v1/adviser/longreads/60683';
+const LINK = 'alfabank://longread?endpoint=v1/adviser/longreads/85305';
 
 if (LS.getItem(LSKeys.ShowThx, false)) {
   window.location.replace(LINK);
@@ -76,7 +107,7 @@ export const App = () => {
   }, []);
 
   const submit = () => {
-    window.gtag('event', '6532_add_var2');
+    window.gtag('event', '6832_card_activate', { var: 'var2' });
 
     setLoading(true);
 
@@ -87,23 +118,49 @@ export const App = () => {
 
   return (
     <>
-      <div className={appSt.container}>
-        <div className={appSt.box}>
-          <img src={hb} width={120} height={120} />
-          <Typography.TitleResponsive color="primary-inverted" tag="h1" view="medium" font="system" weight="semibold">
-            Смарт Инвестиции
-          </Typography.TitleResponsive>
-          <Typography.Text view="primary-medium" color="primary-inverted">
-            30 дней бесплатно,
-            <br />
-            далее — 199 ₽ в месяц
-          </Typography.Text>
+      <div className={appSt.box}>
+        <Typography.TitleResponsive
+          style={{ marginTop: '5rem' }}
+          color="primary-inverted"
+          tag="h1"
+          view="large"
+          font="system"
+          weight="medium"
+        >
+          Умный советник в инвестициях
+        </Typography.TitleResponsive>
+        <Typography.Text view="primary-medium" color="primary-inverted">
+          ИИ знает, когда покупать
+          <br />и когда продавать
+        </Typography.Text>
 
-          <div className={appSt.tag}>
-            Ежегодная экономия <b>~ 9000 ₽</b>
+        <div className={appSt.grid}>
+          <div className={appSt.gridItem}>
+            <Typography.TitleResponsive color="positive" tag="h3" view="medium" font="system" weight="semibold">
+              29%
+            </Typography.TitleResponsive>
+            <Typography.Text view="primary-small" color="primary-inverted">
+              За последний год
+            </Typography.Text>
+          </div>
+          <div className={appSt.gridItem}>
+            <Typography.TitleResponsive color="negative" tag="h3" view="medium" font="system" weight="semibold">
+              -7%
+            </Typography.TitleResponsive>
+            <Typography.Text view="primary-small" color="primary-inverted">
+              Индекс МосБиржи
+            </Typography.Text>
           </div>
         </div>
 
+        <div className={appSt.banner}>
+          <img src={bannerImg} className={appSt.bannerImg} width={85} height={105} alt="banner" />
+          <Typography.Text view="primary-small" color="primary-inverted">
+            Получайте идеи по сделкам от ИИ и принимайте взвешенные решения, что покупать и продавать
+          </Typography.Text>
+        </div>
+      </div>
+      <div className={appSt.container}>
         <Typography.TitleResponsive
           color="primary-inverted"
           style={{ marginTop: '1rem' }}
@@ -112,80 +169,22 @@ export const App = () => {
           font="system"
           weight="semibold"
         >
-          Топ привилегии
+          Что входит
         </Typography.TitleResponsive>
 
-        <PureCell className={appSt.cell}>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={house} width={48} height={48} alt="house" />
-          </PureCell.Graphics>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.TitleResponsive color="primary-inverted" tag="h3" view="xsmall" font="system" weight="semibold">
-                0% комиссии на первые 5 сделок в месяц
-              </Typography.TitleResponsive>
-
-              <Typography.Text view="primary-small" color="secondary-inverted">
-                Экономьте до 500 ₽ ежемесячно просто за то, что формируете капитал
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-        </PureCell>
-
-        <PureCell className={appSt.cell}>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={heart} width={48} height={48} alt="heart" />
-          </PureCell.Graphics>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.TitleResponsive color="primary-inverted" tag="h3" view="xsmall" font="system" weight="semibold">
-                20% кэшбек с каждой комиссии (после лимита)
-              </Typography.TitleResponsive>
-
-              <Typography.Text view="primary-small" color="secondary-inverted">
-                Возврат в виде рублей в приложении Банка
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-        </PureCell>
-
-        <Typography.TitleResponsive
-          color="primary-inverted"
-          style={{ marginTop: '1rem' }}
-          tag="h2"
-          view="small"
-          font="system"
-          weight="semibold"
-        >
-          Дополнительные привилегии
-        </Typography.TitleResponsive>
-
-        {items.map(item => (
-          <PureCell className={appSt.cell} key={item.title}>
+        {pItems.map(item => (
+          <PureCell key={item.title}>
             <PureCell.Graphics>
-              <item.IconComp color="#FFFFFF" />
+              <img src={item.img} width={48} height={48} alt={item.title} />
             </PureCell.Graphics>
             <PureCell.Content>
               <PureCell.Main>
-                <Typography.Text color="primary-inverted" view="primary-small" weight="bold">
+                <Typography.TitleResponsive color="primary-inverted" tag="h4" view="xsmall" font="system" weight="semibold">
                   {item.title}
+                </Typography.TitleResponsive>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  {item.text}
                 </Typography.Text>
-
-                {typeof item.text === 'string' ? (
-                  <Typography.Text view="primary-small" color="secondary-inverted">
-                    {item.text}
-                  </Typography.Text>
-                ) : (
-                  <List tag="ul" marker="•">
-                    {item.text.map((answer, ansIndex) => (
-                      <List.Item className={appSt.listItem} key={ansIndex}>
-                        <Typography.Text view="primary-small" color="secondary-inverted">
-                          {answer}
-                        </Typography.Text>
-                      </List.Item>
-                    ))}
-                  </List>
-                )}
               </PureCell.Main>
             </PureCell.Content>
           </PureCell>
@@ -199,11 +198,45 @@ export const App = () => {
           font="system"
           weight="semibold"
         >
-          Подписка бесплатна? Легко
+          Преимущества
         </Typography.TitleResponsive>
-        <Typography.Text view="primary-medium" color="secondary-inverted">
-          Держите на брокерском счете от 25 000 ₽ 30 дней — подписка будет бесплатной весь следующий месяц
-        </Typography.Text>
+
+        {insideItems.map(item => (
+          <PureCell key={item.title} className={appSt.cell2}>
+            <PureCell.Content>
+              <PureCell.Main>
+                <Typography.Text view="primary-medium" color="primary-inverted" weight="bold">
+                  {item.title}
+                </Typography.Text>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  {item.subtitle}
+                </Typography.Text>
+              </PureCell.Main>
+            </PureCell.Content>
+            <PureCell.Addon verticalAlign="bottom">
+              <img src={item.img} width={90} height={90} alt={item.title} className={appSt.cell2Img} />
+            </PureCell.Addon>
+          </PureCell>
+        ))}
+
+        {expItems.map(item => (
+          <Fragment key={item.title}>
+            <Typography.TitleResponsive
+              color="primary-inverted"
+              style={{ marginTop: '1rem' }}
+              tag="h2"
+              view="small"
+              font="system"
+              weight="semibold"
+            >
+              {item.title}
+            </Typography.TitleResponsive>
+            <Typography.Text view="primary-medium" color="primary-inverted">
+              {item.text}
+            </Typography.Text>
+            <img src={item.img} width="100%" height="auto" alt={item.title} />
+          </Fragment>
+        ))}
 
         <Typography.TitleResponsive
           color="primary-inverted"
@@ -213,14 +246,40 @@ export const App = () => {
           font="system"
           weight="semibold"
         >
-          Частые вопросы
+          Актуальные бумаги в портфеле
+        </Typography.TitleResponsive>
+
+        <div>
+          <Swiper style={{ marginLeft: '0' }} spaceBetween={16} slidesPerView="auto">
+            {Object.keys(TICKER_TO_IMAGE).map(ticker => (
+              <SwiperSlide style={{ maxWidth: 'min-content' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <img src={TICKER_TO_IMAGE[ticker]} width={48} height={48} alt={ticker} />
+                  <Typography.Text view="secondary-large" color="primary-inverted">
+                    {ticker}
+                  </Typography.Text>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <Typography.TitleResponsive
+          color="primary-inverted"
+          style={{ marginTop: '1rem' }}
+          tag="h2"
+          view="small"
+          font="system"
+          weight="semibold"
+        >
+          Дополнительные вопросы
         </Typography.TitleResponsive>
 
         {faqs.map((faq, index) => (
           <div style={{ marginTop: '1rem' }} key={index}>
             <div
               onClick={() => {
-                window.gtag('event', `6532_FAQ${index + 1}_var2`);
+                window.gtag('event', '6832_card_faq', { faq: String(index + 1), var: 'var2' });
 
                 setCollapsedItem(items =>
                   items.includes(String(index + 1))
@@ -244,9 +303,17 @@ export const App = () => {
               )}
             </div>
             <Collapse expanded={collapsedItems.includes(String(index + 1))}>
-              <Typography.Text view="primary-medium" color="secondary-inverted">
-                {faq.answer}
-              </Typography.Text>
+              {faq.answer.map((answerPart, answerIndex) => (
+                <Typography.Text
+                  key={answerIndex}
+                  tag="p"
+                  defaultMargins={false}
+                  view="primary-medium"
+                  color="primary-inverted"
+                >
+                  {answerPart}
+                </Typography.Text>
+              ))}
             </Collapse>
           </div>
         ))}
